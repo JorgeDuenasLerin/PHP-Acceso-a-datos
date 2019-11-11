@@ -27,7 +27,7 @@ class DWESBaseDatos {
         if($motor != "sqlite") {
           $cadenaConexion = "$motor:host=$serverIp;dbname=$basedatos;charset=$charset";
         } else {
-          $cadenaConexion = "$motor:$usuario";
+          $cadenaConexion = "$motor:$basedatos";
         }
 
         if($options == null){

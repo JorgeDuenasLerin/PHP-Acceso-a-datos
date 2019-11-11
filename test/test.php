@@ -3,7 +3,7 @@
 require("./src/DWESBaseDatos.php");
 
 $db = new DWESBaseDatos(
-              'foro', 'sqlite', 'test.sqlite3'
+              'test.sqlite3', 'sqlite'
           );
 
 $db -> ejecuta("DROP TABLE IF EXISTS Respuesta");
