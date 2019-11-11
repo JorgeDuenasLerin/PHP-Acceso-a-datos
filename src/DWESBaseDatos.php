@@ -12,17 +12,23 @@ Por Jorge Dueñas Lerín
 class DWESBaseDatos {
 
     private $conexion = null;
+    private $sentencia = null;
+    private $executed = false;
 
     function __construct(
         $basedatos,
-        $usuario  = 'root',
-        $pass     = '1234',
         $motor    = 'mysql',
+        $usuario  = 'root', // Or file is sqlite
+        $pass     = '1234',
         $serverIp = 'localhost',
         $charset  = 'utf8mb4',
         $options  = null
     ) {
-        $cadenaConexion = "$motor:host=$serverIp;dbname=$basedatos;charset=$charset";
+        if($motor != "sqlite") {
+          $cadenaConexion = "$motor:host=$serverIp;dbname=$basedatos;charset=$charset";
+        } else {
+          $cadenaConexion = "$motor:$usuario";
+        }
 
         if($options == null){
             $options = [
@@ -35,7 +41,11 @@ class DWESBaseDatos {
         }
 
         try {
-          $this->$conexion = new PDO($cadenaConexion, $usuario, $pass, $options);
+          if($motor != "sqlite") {
+            $this->conexion = new PDO($cadenaConexion, $usuario, $pass, $options);
+          } else {
+            $this->conexion = new PDO($cadenaConexion, null, null, $options);
+          }
         } catch (Exception $e) {
           error_log($e->getMessage());
           exit('No ha sido posible la conexión');
@@ -48,12 +58,23 @@ class DWESBaseDatos {
           1º SQL
           2º ... parámetros o array con parámetros
     */
-    function ejecutaPosicional(string $sql, ...$parametros) {
+    function ejecuta(string $sql, ...$parametros) {
+        $this->sentencia = $this->conexion->prepare($sql);
+
+        if($parametros == null){
+            $this->executed = $this->sentencia->execute();
+            return;
+        }
+
         if($parametros != null && is_array($parametros[0])) {
             $parametros = $parametros[0]; // Si nos pasan un array lo usamos como parámetro
         }
 
-        print_r($parametros);
+        $this->executed = $this->sentencia->execute($parametros);
+    }
+
+    function obtenDatos(){
+        return $this->sentencia->fetchAll();
     }
 
     function __destruct(){
