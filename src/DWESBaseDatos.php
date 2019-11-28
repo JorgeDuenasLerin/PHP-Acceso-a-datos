@@ -77,6 +77,10 @@ class DWESBaseDatos {
         return $this->sentencia->fetchAll();
     }
 
+    function getId(){
+        return $this->conexion->lastInsertId();
+    }
+
     function __destruct(){
         $this->conexion = null;
     }
