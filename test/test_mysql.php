@@ -4,12 +4,12 @@ require("./src/DWESBaseDatos.php");
 
 $db = DWESBaseDatos::obtenerInstancia();
 $db->inicializa(
-              'test.sqlite3', null, null, 'sqlite'
+              'examen', 'examen', 'examen', 'mysql'
           );
 
 
 $db -> ejecuta("DROP TABLE IF EXISTS Respuesta");
-$db -> ejecuta("CREATE TABLE Respuesta ( id MEDIUMINT NOT NULL,  titulo  varchar(120) NOT NULL )");
+$db -> ejecuta("CREATE TABLE Respuesta ( id MEDIUMINT NOT NULL AUTO_INCREMENT,  titulo  varchar(120) NOT NULL, PRIMARY KEY (id) )");
 
 
 $db -> ejecuta(
